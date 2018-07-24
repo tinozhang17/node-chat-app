@@ -1,1 +1,7 @@
 // use the built-in Path package to manipulate directory path - it's very convenient.
+
+// When we integrate socket.io with our server, we get a couple of cool things on the front-end. First, we get a route that accepts incoming websocket connections, and we also get access to a js library that makes it easy to work with socket.io on the client side. We can see the scripts in this library, by going to <app rul>/socket.io/socket.io.js in the browser.
+
+// Websocket is a persistent technology, that means the client and the server are trying to create a persistent connection. If either side drops the connection, the other side will keep trying to reestablish that connection.
+
+// The socket can listen and emit events
