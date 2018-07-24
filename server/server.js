@@ -4,6 +4,8 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
+const {generateMessage} = require('./utils/message');
+
 const publicPath = path.join(__dirname, '../public'); // this will bring us to the public folder nicely
 const port = process.env.PORT || 3000;
 
@@ -16,11 +18,15 @@ app.use('/', express.static(publicPath)); // we are using the express.static bui
 io.on('connection', (socket) => {
     console.log('New user connected');
 
-    socket.emit('newMessage', {
-        from: 'tino@example.com',
-        text: 'This is a new message!',
-        createdAt: 123
-    }); // emit is essentially creating an event. Here we are emitting a newMessage event from the server to the client
+    // socket.emit('newMessage', {
+    //     from: 'tino@example.com',
+    //     text: 'This is a new message!',
+    //     createdAt: 123
+    // }); // emit is essentially creating an event. Here we are emitting a newMessage event from the server to the client
+
+    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat room.'));
+
+    socket.broadcast.emit('newMessage', generateMessage('Admin', 'A new user just joined the chat room'));
 
     socket.on('disconnect', () => {
         console.log('User disconnected');
@@ -28,11 +34,12 @@ io.on('connection', (socket) => {
 
     socket.on('createMessage', (message) => {
         console.log('User created this message: ', message);
-        io.emit('newMessage', {
-            from: message.from,
-            text: message.text,
-            createdAt: new Date().getTime()
-        }); // This sets the server to broadcast a newMessage event to all of the connected users
+        io.emit('newMessage', generateMessage(message.from, message.text)); // This sets the server to broadcast a newMessage event to all of the connected users
+        // socket.broadcast.emit('newMessage', {
+        //     from: message.from,
+        //     text: message.text,
+        //     createdAt: new Date().getTime()
+        // }); // broadcast will emit the event to every connected client except the client of the current socket.
     }); // this sets the server to listen to createMessage events created by the client
 });
 
