@@ -1,62 +1,30 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial=scale=1, user-scalable=no">
+    <title>Join | ChatApp</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
-
-<body class="chat">
-
-<aside class="chat__sidebar">
-    <h3>People</h3>
-    <div id="users">
-
-    </div>
-</aside>
-
-<main class="chat__main">
-    <ol id="messages" class="chat__messages"></ol>
-
-    <footer class="chat__footer">
-        <form id="message-form" action="">
-            <input type="text" name="message" placeholder="Message" autofocus autocomplete="off">
-            <button>Send Message</button>
-        </form>
-        <button id="send-location">Send location</button>
-    </footer>
+<body class="centered-form">
+<main class="centered-form__form">
+    <form action="/chat.html">
+        <div class="form-field">
+            <h3>Join a Chat</h3>
+        </div>
+        <div class="form-field">
+            <label for="form-field__name">Display name</label>
+            <input id="form-field__name" type="text" name="name" autofocus>
+        </div>
+        <div class="form-field">
+            <label for="form-field__room-name">Room name</label>
+            <input id="form-field__room-name" type="text" name="room">
+        </div>
+        <div class="form-field">
+            <button>Join</button>
+        </div>
+    </form>
 </main>
 
-<script id="message-template" type="text/template">
-<li class="message">
-    <div class="message__title">
-        <h4>{{from}}</h4>
-        <span>{{createdAt}}</span>
-    </div>
-    <div class="message__body">
-        <p>{{text}}</p>
-    </div>
-</li>
-</script>
-
-<script id="location-message-template" type="text/template">
-<li class="message">
-    <div class="message__title">
-        <h4>{{from}}</h4>
-        <span>{{createdAt}}</span>
-    </div>
-    <div class="message__body">
-        <p>
-            <a href="{{url}}" target="_blank">This is my location</a>
-        </p>
-    </div>
-</li>
-</script>
-
-<script src="/socket.io/socket.io.js"></script>
-<script src="/js/libs/jquery-3.3.1.min.js"></script>
-<script src="/js/libs/moment.min.js"></script>
-<script src="/js/libs/mustache.min.js"></script>
-<script src="/js/index.js"></script>
 </body>
 </html>
