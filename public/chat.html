@@ -55,10 +55,19 @@
 </li>
 </script>
 
+<script id="user-list-template" type="text/template">
+<ul>
+    {{#users}}
+    <li>{{.}}</li>
+    {{/users}}
+</ul>
+</script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script src="/js/libs/jquery-3.3.1.min.js"></script>
 <script src="/js/libs/moment.min.js"></script>
 <script src="/js/libs/mustache.min.js"></script>
+<script src="/js/libs/deparam.js"></script>
 <script src="/js/chat.js"></script>
 </body>
 </html>
