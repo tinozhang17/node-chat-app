@@ -5,3 +5,7 @@
 // Websocket is a persistent technology, that means the client and the server are trying to create a persistent connection. If either side drops the connection, the other side will keep trying to reestablish that connection.
 
 // The socket can listen and emit events
+
+// Timestamp: 1000 = Jan 1st 1970 00:00:01AM
+// everything is relative to 1970-01-01 00:00:00AM
+
