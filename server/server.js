@@ -4,7 +4,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage} = require('./utils/message');
+const {generateMessage, generateLocationMessage} = require('./utils/message');
 
 const publicPath = path.join(__dirname, '../public'); // this will bring us to the public folder nicely
 const port = process.env.PORT || 3000;
@@ -42,6 +42,11 @@ io.on('connection', (socket) => {
         //     createdAt: new Date().getTime()
         // }); // broadcast will emit the event to every connected client except the client of the current socket.
     }); // this sets the server to listen to createMessage events created by the client
+
+    socket.on("createLocationMessage", (coords, callback) => {
+        io.emit('newLocationMessage', generateLocationMessage('Admin', coords.latitude, coords.longitude));
+        callback();
+    });
 });
 
 server.listen(port, () => {
