@@ -32,9 +32,10 @@ io.on('connection', (socket) => {
         console.log('User disconnected');
     });
 
-    socket.on('createMessage', (message) => {
+    socket.on('createMessage', (message, callback) => {
         console.log('User created this message: ', message);
         io.emit('newMessage', generateMessage(message.from, message.text)); // This sets the server to broadcast a newMessage event to all of the connected users
+        callback('This is from te server, acknowledging that it received the createMessage event from the client.'); // this is how we can acknowledge
         // socket.broadcast.emit('newMessage', {
         //     from: message.from,
         //     text: message.text,
