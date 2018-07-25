@@ -1,5 +1,21 @@
 let socket = io(); // this will open up a websocket and keep that connection opened. This variable is critical to communicating.
 
+function scrollToBottom () {
+    // Selectors
+    let messages = jQuery('#messages');
+    let newMessage = messages.children('li:last-child');
+    // Heights
+    let clientHeight = messages.prop('clientHeight');
+    let scrollTop = messages.prop('scrollTop');
+    let scrollHeight = messages.prop('scrollHeight');
+    let newMessageHeight = newMessage.innerHeight();
+    let lastMessageHeight = newMessage.prev().innerHeight();
+
+    if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+        messages.scrollTop(scrollHeight);
+    }
+}
+
 socket.on('connect', function () {
     console.log('Connected to server');
 
@@ -22,7 +38,7 @@ socket.on('newMessage', function (message) {
         createdAt: formattedTime
     });
     jQuery('#messages').append(html);
-
+    scrollToBottom();
     // let formattedTime = moment(message.createAt).format('h:mm a');
     // console.log('New message from server', message);
     // let li = jQuery('<li></li>');
@@ -46,6 +62,7 @@ socket.on('newLocationMessage', function (message) {
     // a.attr('href', message.url);
     // li.append(a);
     jQuery('#messages').append(html);
+    scrollToBottom();
 });
 
 jQuery('#message-form').on('submit', function (e) {
