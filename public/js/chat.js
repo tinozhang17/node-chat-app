@@ -1,4 +1,5 @@
-let socket = io(); // this will open up a websocket and keep that connection opened. This variable is critical to communicating.
+let socket = io('/chat'); // this will open up a websocket and keep that connection opened. This variable is critical to
+// communicating.
 
 function scrollToBottom () {
     // Selectors

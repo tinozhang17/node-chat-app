@@ -7,6 +7,7 @@ const socketIO = require('socket.io');
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation.js');
 const {Users} = require('./utils/users');
+const {Rooms} = require('./utils/rooms');
 
 const publicPath = path.join(__dirname, '../public'); // this will bring us to the public folder nicely
 const port = process.env.PORT || 3000;
@@ -15,10 +16,23 @@ let app = express();
 let server = http.createServer(app); // in the backend, express uses the HTTP module to create the server; thus, we can also create the server directly by calling http.createServer method.
 let io = socketIO(server); // we get back a websocket server, and we will use this to admit and emit events and communicate between the server and the client. When we integrate socket.io with our server, we get a couple of cool things on the front-end. First, we get a route that accepts incoming websocket connections, and we also get access to a js library that makes it easy to work with socket.io on the client side.
 let users = new Users();
+let rooms = new Rooms();
 
 app.use('/', express.static(publicPath)); // we are using the express.static built-in middleware function to serve static files
 
-io.on('connection', (socket) => {
+let indexIO = io.of('/index');
+let chatIO = io.of('/chat');
+
+indexIO.on('connection', (socket) => {
+    console.log('New index connection');
+    socket.on('getRoomList', (params, callback) => {
+        socket.emit('updateRoomList', rooms.getCurrentRooms());
+        callback();
+    });
+});
+
+
+chatIO.on('connection', (socket) => {
     console.log('New user connected');
 
     socket.on('join', (params, callback) => {
@@ -30,8 +44,10 @@ io.on('connection', (socket) => {
 
         users.removeUser(socket.id);
         users.addUser(socket.id, params.name, params.room);
+        rooms.updateRoom(params.room, 'INC');
+        indexIO.emit('updateRoomList', rooms.getCurrentRooms());
 
-        io.to(params.room).emit('updateUserList', users.getUserList(params.room));
+        chatIO.to(params.room).emit('updateUserList', users.getUserList(params.room));
 
         socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat room.'));
 
@@ -44,8 +60,10 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         let user = users.removeUser(socket.id);
         if (user) {
-            io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-            io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`));
+            rooms.updateRoom(user.room, 'DEC');
+            indexIO.emit('updateRoomList', rooms.getCurrentRooms());
+            chatIO.to(user.room).emit('updateUserList', users.getUserList(user.room));
+            chatIO.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`));
         }
     });
 
@@ -53,7 +71,7 @@ io.on('connection', (socket) => {
         let user = users.getUser(socket.id);
 
         if (user && isRealString(message.text)) {
-            io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
+            chatIO.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
         }
 
         console.log('User created this message: ', message);
@@ -70,7 +88,7 @@ io.on('connection', (socket) => {
         let user = users.getUser(socket.id);
 
         if (user) {
-            io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+            chatIO.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
             callback();
         }
     });

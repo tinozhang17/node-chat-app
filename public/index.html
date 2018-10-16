@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial=scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Join | ChatApp</title>
     <link rel="stylesheet" href="/css/styles.css">
 </head>
@@ -18,13 +18,25 @@
         </div>
         <div class="form-field">
             <label for="form-field__room-name">Room name</label>
-            <input id="form-field__room-name" type="text" name="room">
+            <input id="form-field__room-name" type="text" name="room" list="form-field__room-list">
+            <datalist id="form-field__room-list"></datalist>
         </div>
         <div class="form-field">
             <button>Join</button>
         </div>
     </form>
 </main>
+
+<script id="room-list-template" type="text/template">
+    {{#rooms}}
+    <option value="{{.}}">
+    {{/rooms}}
+</script>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/libs/jquery-3.3.1.min.js"></script>
+<script src="/js/libs/mustache.min.js"></script>
+<script src="/js/index.js"></script>
 
 </body>
 </html>
